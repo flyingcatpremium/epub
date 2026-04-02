@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1381: The Year of the Peasants' Revolt</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #f5f0e8; font-family: sans-serif; }
+    #topbar {
+      background: #3b2f2f;
+      color: #f5f0e8;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    #topbar h1 { font-size: 15px; font-weight: 500; }
+    #progress { font-size: 13px; opacity: 0.7; }
+    #viewer { width: 100%; height: calc(100vh - 50px); }
+    #prev, #next {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #3b2f2f;
+      color: #f5f0e8;
+      border: none;
+      width: 40px;
+      height: 60px;
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0.5;
+      border-radius: 4px;
+    }
+    #prev:hover, #next:hover { opacity: 1; }
+    #prev { left: 0; }
+    #next { right: 0; }
+  </style>
+</head>
+<body>
+  <div id="topbar">
+    <h1>1381: The Year of the Peasants' Revolt — Juliet Barker</h1>
+    <span id="progress"></span>
+  </div>
+  <div id="viewer"></div>
+  <button id="prev">‹</button>
+  <button id="next">›</button>
+  <script>
+    var book = ePub("Juliet_Barker-1381_The_Year_of_the_Peasants_Revolt.epub");
+    var rendition = book.renderTo("viewer", {
+      width: "100%",
+      height: "100%"
+    });
+    rendition.display();
+
+    book.ready.then(function() {
+      var locations = book.locations.generate(1024);
+    });
+
+    rendition.on("relocated", function(location) {
+      document.getElementById("progress").textContent =
+        "第 " + (location.start.location) + " / " + book.locations.total + " 页";
+    });
+
+    document.getElementById("next").onclick = function() { rendition.next(); };
+    document.getElementById("prev").onclick = function() { rendition.prev(); };
+
+    document.addEventListener("keyup", function(e) {
+      if (e.key === "ArrowRight") rendition.next();
+      if (e.key === "ArrowLeft") rendition.prev();
+    });
+  </script>
+</body>
+</html>
